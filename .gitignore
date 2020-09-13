@@ -9,6 +9,9 @@
 composer.lock
 /vendor
 
+# TYPO3 9
+/var
+
 # Node packages.
 /node_modules
 
