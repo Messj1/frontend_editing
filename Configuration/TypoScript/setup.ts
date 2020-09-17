@@ -32,7 +32,7 @@ tt_content.textpic.stdWrap < lib.fluidContent.stdWrap
 tt_content.uploads.stdWrap < lib.fluidContent.stdWrap
 tt_content.mailform.stdWrap < lib.fluidContent.stdWrap
 
-config.tx_extbase{
+config.tx_extbase {
     objects {
         TYPO3\CMS\Extbase\Mvc\View\NotFoundView.className = TYPO3\CMS\FrontendEditing\Mvc\View\NotFoundView
     }
@@ -45,48 +45,50 @@ lib.parseFunc_RTE.tags.a >
 
 [backend.user.isLoggedIn]
 
-    config.tx_frontendediting {
-        # These transformations are applied to the page being edited to ensure features work as expected and inceptions
-        # are avoided.
-        pageContentPreProcessing {
-            parseFunc {
-                tags {
-                    form = TEXT
-                    form {
-                        current = 1
+config.tx_frontendediting {
+    # These transformations are applied to the page being edited to ensure features work as expected and inceptions
+    # are avoided.
+    pageContentPreProcessing {
+        parseFunc {
+            tags {
+                form = TEXT
+                form {
+                    current = 1
 
-                        # Add frontend_editing=true if this is a GET form (rather than POST)
-                        innerWrap = <input type="hidden" name="frontend_editing" value="true">|
-                        innerWrap.if {
-                            value.data = parameters : method
-                            value.case = lower
-                            equals = get
+                    # Add frontend_editing=true if this is a GET form (rather than POST)
+                    innerWrap = <input type="hidden" name="frontend_editing" value="true">|
+                    innerWrap.if {
+                        value {
+                            data = parameters : method
+                            case = lower
                         }
-
-                        dataWrap = <form { parameters : allParams }>|</form>
+                        equals = get
                     }
+
+                    dataWrap = <form { parameters : allParams }>|</form>
                 }
             }
+        }
 
-            HTMLparser = 1
-            HTMLparser {
-                keepNonMatchedTags = 1
+        HTMLparser = 1
+        HTMLparser {
+            keepNonMatchedTags = 1
 
-                tags {
-                    a.fixAttrib {
-                        href.userFunc = TYPO3\CMS\FrontendEditing\UserFunc\HtmlParserUserFunc->removeFrontendEditingInUrl
+            tags {
+                a.fixAttrib {
+                    href.userFunc = TYPO3\CMS\FrontendEditing\UserFunc\HtmlParserUserFunc->removeFrontendEditingInUrl
 
-                        target.list = _self
-                    }
+                    target.list = _self
+                }
 
-                    form.fixAttrib {
-                        action.userFunc = TYPO3\CMS\FrontendEditing\UserFunc\HtmlParserUserFunc->addFrontendEditingInUrl
+                form.fixAttrib {
+                    action.userFunc = TYPO3\CMS\FrontendEditing\UserFunc\HtmlParserUserFunc->addFrontendEditingInUrl
 
-                        target.list = _self
-                    }
+                    target.list = _self
                 }
             }
         }
     }
+}
 
 [global]
