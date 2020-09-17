@@ -130,57 +130,81 @@ class FrontendEditingPanel
         }
 
         if ($isWholeElement) {
-            // Special content is about to be shown, so the cache must be disabled.
-            $this->frontendController->set_no_cache('Display frontend edit icons', true);
-
-            // wrap content with controls
-            $content = $wrapperService->wrapContent(
+            $content = $this->renderWholeElement(
+                $wrapperService,
                 $table,
-                (int)$editUid,
+                $editUid,
                 $dataArr,
                 $content
             );
+        }
 
-            $isWrappedWithDropzone = false;
-            $frontendEditingConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['frontend_editing'];
-            if (is_array($frontendEditingConfiguration['FrontendEditingPanel']['dropzoneModifiers'])) {
-                foreach ($frontendEditingConfiguration['FrontendEditingPanel']['dropzoneModifiers'] as $classData) {
-                    $hookObject = GeneralUtility::makeInstance($classData);
-                    if (!$hookObject instanceof FrontendEditingDropzoneModifier) {
-                        throw new \UnexpectedValueException(
-                            $classData . ' must implement interface ' . FrontendEditingDropzoneModifier::class,
-                            1493980015
-                        );
-                    }
-                    $isWrappedWithDropzone = $hookObject->wrapWithDropzone(
-                        $table,
-                        (int)$editUid,
-                        $dataArr,
-                        $content
+        return $content;
+    }
+
+    /**
+     * Render a whole content element
+     *
+     * @param $wrapperService
+     * @param $table
+     * @param $editUid
+     * @param $dataArr
+     * @param $content
+     * @return string
+     * @throws \UnexpectedValueException
+     */
+    private function renderWholeElement($wrapperService, $table, $editUid, array $dataArr, $content): string
+    {
+        // Special content is about to be shown, so the cache must be disabled.
+        $this->frontendController->set_no_cache('Display frontend edit icons', true);
+
+        // wrap content with controls
+        $content = $wrapperService->wrapContent(
+            $table,
+            (int)$editUid,
+            $dataArr,
+            $content
+        );
+
+        $isWrappedWithDropzone = false;
+        $frontendEditingConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['frontend_editing'];
+        if (is_array($frontendEditingConfiguration['FrontendEditingPanel']['dropzoneModifiers'])) {
+            foreach ($frontendEditingConfiguration['FrontendEditingPanel']['dropzoneModifiers'] as $classData) {
+                $hookObject = GeneralUtility::makeInstance($classData);
+                if (!$hookObject instanceof FrontendEditingDropzoneModifier) {
+                    throw new \UnexpectedValueException(
+                        $classData . ' must implement interface ' . FrontendEditingDropzoneModifier::class,
+                        1493980015
                     );
                 }
-            }
-            if (!$isWrappedWithDropzone) {
-                // Add a dropzone after content
-                $content = $wrapperService->wrapContentWithDropzone(
+                $isWrappedWithDropzone = $hookObject->wrapWithDropzone(
                     $table,
                     (int)$editUid,
-                    $content,
-                    (int)$dataArr['colPos']
+                    $dataArr,
+                    $content
                 );
+            }
+        }
+        if (!$isWrappedWithDropzone) {
+            // Add a dropzone after content
+            $content = $wrapperService->wrapContentWithDropzone(
+                $table,
+                (int)$editUid,
+                $content,
+                (int)$dataArr['colPos']
+            );
 
-                // If it's first content element for this column wrap with dropzone before content ≤too
-                if (!GeneralUtility::inList(self::$columnsWithContentList, $dataArr['colPos'])) {
-                    $content = $wrapperService->wrapContentWithDropzone(
-                        $table,
-                        0,
-                        $content,
-                        (int)$dataArr['colPos'],
-                        [],
-                        true
-                    );
-                    self::$columnsWithContentList .= ',' . $dataArr['colPos'];
-                }
+            // If it's first content element for this column wrap with dropzone before content ≤too
+            if (!GeneralUtility::inList(self::$columnsWithContentList, $dataArr['colPos'])) {
+                $content = $wrapperService->wrapContentWithDropzone(
+                    $table,
+                    0,
+                    $content,
+                    (int)$dataArr['colPos'],
+                    [],
+                    true
+                );
+                self::$columnsWithContentList .= ',' . $dataArr['colPos'];
             }
         }
 

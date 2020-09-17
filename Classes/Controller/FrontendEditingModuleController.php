@@ -251,11 +251,14 @@ class FrontendEditingModuleController
             )
         );
         $current['width'] = (isset($current['width']) && (int)$current['width'] >= 300 ? (int)$current['width'] : 320);
-        $current['height'] = (isset($current['height']) && (int)$current['height'] >= 300 ? (int)$current['height'] : 480);
+        $currentHeight = $current['height'];
+        $current['height'] = (isset($currentHeight) && (int)$currentHeight >= 300 ? (int)$currentHeight : 480);
 
         $custom = ($this->getBackendUser()->uc['moduleData']['web_view']['States']['custom'] ?: []);
-        $custom['width'] = (isset($current['custom']) && (int)$current['custom'] >= 300 ? (int)$current['custom'] : 320);
-        $custom['height'] = (isset($current['custom']) && (int)$current['custom'] >= 300 ? (int)$current['custom'] : 480);
+        $customWidth = $current['custom'];
+        $custom['width'] = (isset($customWidth) && (int)$customWidth >= 300 ? (int)$customWidth : 320);
+        $customHeight = $current['custom'];
+        $custom['height'] = (isset($customHeight) && (int)$customHeight >= 300 ? (int)$customHeight : 480);
 
         // Apply the GET parameter "frontend_editing_enabled"
         $targetUrl = $targetUrl . '?frontend_editing_enabled=true';
@@ -313,14 +316,17 @@ class FrontendEditingModuleController
             'mobile' => [],
             'unidentified' => []
         ];
-        $previewFrameWidthConfig = BackendUtility::getPagesTSconfig($pageId)['mod.']['web_view.']['previewFrameWidths.'] ?? [];
+        $previewFrames = BackendUtility::getPagesTSconfig($pageId)['mod.']['web_view.']['previewFrameWidths.'];
+        $previewFrameWidthConfig = $previewFrames ?? [];
         foreach ($previewFrameWidthConfig as $item => $conf) {
+            $cW = $conf['width'];
+            $cH = $conf['height'];
             $data = [
                 'key' => substr($item, 0, -1),
                 'label' => $conf['label'] ?? null,
                 'type' => $conf['type'] ?? 'unknown',
-                'width' => (isset($conf['width']) && (int)$conf['width'] > 0 && strpos($conf['width'], '%') === false) ? (int)$conf['width'] : null,
-                'height' => (isset($conf['height']) && (int)$conf['height'] > 0 && strpos($conf['height'], '%') === false) ? (int)$conf['height'] : null,
+                'width' => (isset($cW) && (int)$cW > 0 && strpos($cW, '%') === false) ? (int)$cW : null,
+                'height' => (isset($cH) && (int)$cH > 0 && strpos($cH, '%') === false) ? (int)$cH : null,
             ];
             $width = (int)substr($item, 0, -1);
             if (!isset($data['width']) && $width > 0) {
@@ -371,9 +377,11 @@ class FrontendEditingModuleController
                     $languages[$siteLanguage->getLanguageId()] = $siteLanguage->getTitle();
                 }
             }
+        // @codingStandardsIgnoreStart
         } catch (SiteNotFoundException $e) {
             // do nothing
         }
+        // @codingStandardsIgnoreEnd
         return $languages;
     }
 
@@ -394,7 +402,8 @@ class FrontendEditingModuleController
                 $languageId = (int)$states['languageSelectorValue'];
             }
         } else {
-            $this->getBackendUser()->uc['moduleData']['web_frontendediting']['States']['languageSelectorValue'] = $languageId;
+            $this->getBackendUser()
+                ->uc['moduleData']['web_frontendediting']['States']['languageSelectorValue'] = $languageId;
             $this->getBackendUser()->writeUC($this->getBackendUser()->uc);
         }
         return $languageId;
