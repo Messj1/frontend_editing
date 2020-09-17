@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\Backend\Controller\ContentElement;
 
 /*
@@ -14,7 +16,7 @@ namespace TYPO3\CMS\FrontendEditing\Backend\Controller\ContentElement;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+// @codingStandardsIgnoreStart
 /**
  * Script Class for the New Content element wizard
  * @internal This class is a specific Backend controller implementation
@@ -34,3 +36,4 @@ class NewContentElementController extends \TYPO3\CMS\Backend\Controller\ContentE
         return parent::getWizards();
     }
 }
+// @codingStandardsIgnoreEnd

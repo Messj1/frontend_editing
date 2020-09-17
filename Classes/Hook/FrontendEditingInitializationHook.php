@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace TYPO3\CMS\FrontendEditing\Hook;
 
@@ -96,7 +97,8 @@ class FrontendEditingInitializationHook
         $this->pluginConfiguration = [];
 
         // If this is TYPO3 9 and site configuration was found
-        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) > 9000000
+        if (
+            VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) > 9000000
             // @extensionScannerIgnoreLine
             && isset($GLOBALS['TYPO3_REQUEST'])
             // @extensionScannerIgnoreLine
@@ -233,8 +235,11 @@ class FrontendEditingInitializationHook
         $rtePopupWindowHeight = !empty($rtePopupWindowHeight) ? (int)$rtePopupWindowHeight : 600;
 
         // Define DateTimePicker dateformat
-        $dateFormat = ($GLOBALS['TYPO3_CONF_VARS']['SYS']['USdateFormat'] ?
-            ['MM-DD-YYYY', 'HH:mm MM-DD-YYYY'] : ['DD-MM-YYYY', 'HH:mm DD-MM-YYYY']);
+        if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['USdateFormat']) {
+            $dateFormat = ['MM-DD-YYYY', 'HH:mm MM-DD-YYYY'];
+        } else {
+            $dateFormat = ['DD-MM-YYYY', 'HH:mm DD-MM-YYYY'];
+        }
 
         // Load available content elements right here, because it adds too much stuff to PageRenderer,
         // so it has to be loaded before
@@ -359,10 +364,10 @@ class FrontendEditingInitializationHook
                     'ckeditor-jquery-adapter' => ['jquery', 'ckeditor'],
                 ],
                 'paths' => [
-                    'TYPO3/CMS/FrontendEditing/Contrib/toastr' =>
-                        'EXT:frontend_editing/Resources/Public/JavaScript/Contrib/toastr',
-                    'TYPO3/CMS/FrontendEditing/Contrib/immutable' =>
-                        'EXT:frontend_editing/Resources/Public/JavaScript/Contrib/immutable'
+                    'TYPO3/CMS/FrontendEditing/Contrib/toastr'
+                        => 'EXT:frontend_editing/Resources/Public/JavaScript/Contrib/toastr',
+                    'TYPO3/CMS/FrontendEditing/Contrib/immutable'
+                        => 'EXT:frontend_editing/Resources/Public/JavaScript/Contrib/immutable'
                 ]
             ]
         );
@@ -431,6 +436,7 @@ class FrontendEditingInitializationHook
      *
      * @param array &$wizardItems
      * @param NewContentElementController $contentController
+     * @throws \UnexpectedValueException
      */
     protected function wizardItemsHook(array &$wizardItems, NewContentElementController $contentController)
     {
@@ -491,7 +497,8 @@ class FrontendEditingInitializationHook
             foreach ($configuration['customRecords'] as $record) {
                 $pid = (int)$record['pid'] ?: $this->typoScriptFrontendController->id;
                 $page = BackendUtility::getRecord('pages', $pid);
-                if (is_array($record) &&
+                if (
+                    is_array($record) &&
                     $record['table'] &&
                     isset($GLOBALS['TCA'][$record['table']]) &&
                     $GLOBALS['BE_USER']->check('tables_modify', $record['table']) &&

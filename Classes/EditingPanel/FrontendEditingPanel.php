@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\EditingPanel;
 
 /*
@@ -83,6 +85,7 @@ class FrontendEditingPanel
      * @param string $editUid
      * @param string $fieldList
      * @return string
+     * @throws \UnexpectedValueException
      */
     public function editIcons(
         $content,
@@ -158,7 +161,6 @@ class FrontendEditingPanel
                 }
             }
             if (!$isWrappedWithDropzone) {
-                // @TODO: should there be a config for dropzones like "if ((int)$conf['addDropzone'] > 0)"
                 // Add a dropzone after content
                 $content = $wrapperService->wrapContentWithDropzone(
                     $table,
@@ -167,7 +169,7 @@ class FrontendEditingPanel
                     (int)$dataArr['colPos']
                 );
 
-                // If it's first content element for this column wrap with dropzone before content too
+                // If it's first content element for this column wrap with dropzone before content ≤too
                 if (!GeneralUtility::inList(self::$columnsWithContentList, $dataArr['colPos'])) {
                     $content = $wrapperService->wrapContentWithDropzone(
                         $table,

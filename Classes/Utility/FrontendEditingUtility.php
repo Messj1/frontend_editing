@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace TYPO3\CMS\FrontendEditing\Utility;
 
@@ -23,7 +24,8 @@ class FrontendEditingUtility
 {
     public static function isEnabled()
     {
-        if (GeneralUtility::_GET('frontend_editing') &&
+        if (
+            GeneralUtility::_GET('frontend_editing') &&
             isset($GLOBALS['BE_USER']) &&
             $GLOBALS['BE_USER'] instanceof FrontendBackendUserAuthentication
         ) {

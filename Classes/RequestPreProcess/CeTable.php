@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\RequestPreProcess;
 
 /*
@@ -44,7 +46,7 @@ class CeTable implements RequestPreProcessInterface
         bool &$isFinished
     ): string {
         // Only allowed for element "table"
-        if ($table  === 'tt_content' && $fieldName === 'bodytext' && $record['CType'] === 'table') {
+        if ($table === 'tt_content' && $fieldName === 'bodytext' && $record['CType'] === 'table') {
             $isFinished = true;
 
             $domDocument = new \DOMDocument();
@@ -78,7 +80,7 @@ class CeTable implements RequestPreProcessInterface
                     $captionValue = trim($c->nodeValue);
                 }
 
-                $doc = new \DOMDOcument;
+                $doc = new \DOMDOcument();
                 $doc->loadxml($record['pi_flexform']);
 
                 $replacement = $doc->createDocumentFragment();

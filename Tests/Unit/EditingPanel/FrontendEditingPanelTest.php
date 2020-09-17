@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\Tests\Unit\EditingPanel;
 
 /*
@@ -50,12 +52,10 @@ class FrontendEditingPanelTest extends UnitTestCase
      */
     protected function setUp()
     {
-        $this->templateServiceMock =
-            $this->getMockBuilder(TemplateService::class)
+        $this->templateServiceMock = $this->getMockBuilder(TemplateService::class)
             ->setMethods(['getFileName', 'linkData'])->getMock();
 
-        $pageRepositoryMock =
-            $this->getMockBuilder(PageRepositoryFixture::class)
+        $pageRepositoryMock = $this->getMockBuilder(PageRepositoryFixture::class)
             ->setMethods(['getRawRecord', 'getMountPointInfo'])->getMock();
 
         $this->frontendControllerMock = $this->getAccessibleMock(
@@ -68,16 +68,16 @@ class FrontendEditingPanelTest extends UnitTestCase
 
         $this->frontendControllerMock->tmpl = $this->templateServiceMock;
         $this->frontendControllerMock->config = [];
-        $this->frontendControllerMock->page =  [];
+        $this->frontendControllerMock->page = [];
         $this->frontendControllerMock->sys_page = $pageRepositoryMock;
         $GLOBALS['TSFE'] = $this->frontendControllerMock;
     }
 
     /**
-    * Data provider for editIcons.
-    *
-    * @return array []
-    */
+     * Data provider for editIcons.
+     *
+     * @return array []
+     */
     public function editIconsDataProvider()
     {
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
@@ -258,7 +258,6 @@ class FrontendEditingPanelTest extends UnitTestCase
         $enableEditing,
         $allowEditing
     ) {
-        // TODO: this seems dirty to me. Is there some better example in TYPO3 core?
         $GLOBALS['BE_USER'] = new FrontendBackendUserAuthentication();
         $GLOBALS['TSFE']->config['config']['tx_frontend_editing'] = $enableEditing;
         $GLOBALS['BE_USER']->uc['tx_frontend_editing_enable'] = $allowEditing;

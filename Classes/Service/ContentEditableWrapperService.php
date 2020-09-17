@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace TYPO3\CMS\FrontendEditing\Service;
 
@@ -32,7 +33,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class ContentEditableWrapperService
 {
-    const DEFAULT_WRAPPER_TAG_NAME = 'div';
+    public const DEFAULT_WRAPPER_TAG_NAME = 'div';
 
     /**
      * @var ExtensionManagerConfigurationService
@@ -59,8 +60,8 @@ class ContentEditableWrapperService
      */
     public function __construct()
     {
-        $this->extensionManagerConfigurationService =
-            GeneralUtility::makeInstance(ExtensionManagerConfigurationService::class);
+        $this->extensionManagerConfigurationService
+            = GeneralUtility::makeInstance(ExtensionManagerConfigurationService::class);
         $this->contentEditableWrapperTagName = self::DEFAULT_WRAPPER_TAG_NAME;
         $tagName = $this->extensionManagerConfigurationService->getSettings()['contentEditableWrapperTagName'];
         if ($tagName) {
@@ -143,7 +144,7 @@ class ContentEditableWrapperService
 
         $recordTitle = $this->recordTitle($table, $dataArr);
 
-        // @TODO: include config as parameter and make cid (columnIdentifier) able to set by combining fields
+        // Include config as parameter and make cid (columnIdentifier) able to set by combining fields
         // Could make it would make it possible to configure cid for use with extensions that create columns by content
         $class = 't3-frontend-editing__inline-actions';
         $content = sprintf(
@@ -281,16 +282,16 @@ class ContentEditableWrapperService
     {
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
-        $visibilityIcon = ($elementIsHidden === true) ?
-            $this->renderIconWithWrap('unHide', 'actions-edit-unhide') :
-                $this->renderIconWithWrap('hide', 'actions-edit-hide');
+        if ($elementIsHidden === true) {
+            $visibilityIcon = $this->renderIconWithWrap('unHide', 'actions-edit-unhide');
+        } else {
+            $visibilityIcon = $this->renderIconWithWrap('hide', 'actions-edit-hide');
+        }
 
-        $moveIcons = ($table === 'tt_content') ?
-            $this->renderIconWithWrap('moveUp', 'actions-move-up') .
+        $moveIcons = ($table === 'tt_content') ? $this->renderIconWithWrap('moveUp', 'actions-move-up') .
                 $this->renderIconWithWrap('moveDown', 'actions-move-down') : '';
 
-        $inlineIcons =
-            $this->renderIconWithWrap('edit', 'actions-open', $recordTitle) .
+        $inlineIcons = $this->renderIconWithWrap('edit', 'actions-open', $recordTitle) .
             $visibilityIcon .
             $this->renderIconWithWrap('delete', 'actions-edit-delete') .
             $this->renderIconWithWrap('new', 'actions-document-new') .
@@ -461,7 +462,8 @@ class ContentEditableWrapperService
         $hiddenClassName = '';
         $row = BackendUtility::getRecord($table, $uid);
         $tcaCtrl = $GLOBALS['TCA'][$table]['ctrl'];
-        if ($tcaCtrl['enablecolumns']['disabled'] && $row[$tcaCtrl['enablecolumns']['disabled']] ||
+        if (
+            $tcaCtrl['enablecolumns']['disabled'] && $row[$tcaCtrl['enablecolumns']['disabled']] ||
             $tcaCtrl['enablecolumns']['fe_group'] && $GLOBALS['TSFE']->simUserGroup &&
             $row[$tcaCtrl['enablecolumns']['fe_group']] == $GLOBALS['TSFE']->simUserGroup ||
             $tcaCtrl['enablecolumns']['starttime'] &&

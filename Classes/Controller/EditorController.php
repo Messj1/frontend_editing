@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\Controller;
 
 /*
@@ -147,8 +149,10 @@ class EditorController
             ]
         ];
 
-        if (!isset($this->rteConfiguration['externalPlugins'])
-            || !is_array($this->rteConfiguration['externalPlugins'])) {
+        if (
+            !isset($this->rteConfiguration['externalPlugins'])
+            || !is_array($this->rteConfiguration['externalPlugins'])
+        ) {
             $this->rteConfiguration['externalPlugins'] = [];
         }
 
@@ -263,8 +267,8 @@ class EditorController
         } else {
             $contentLanguage = $this->rteConfiguration['config']['defaultContentLanguage'] ?? 'en_US';
             $languageCodeParts = explode('_', $contentLanguage);
-            $contentLanguage = strtolower($languageCodeParts[0]) . ($languageCodeParts[1]
-                ? '_' . strtoupper($languageCodeParts[1]) : '');
+            $contentLanguage = strtolower($languageCodeParts[0]) .
+                ($languageCodeParts[1] ? '_' . strtoupper($languageCodeParts[1]) : '');
             // Find the configured language in the list of localization locales
             $locales = GeneralUtility::makeInstance(Locales::class);
             // If not found, default to 'en'

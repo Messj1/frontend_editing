@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\Hook;
 
 /*
@@ -47,7 +49,8 @@ class ContentObjectRendererHook
 
         // If content found or not tt_content with colPos is fetched or not in
         // frontend_editing context than return the content.
-        if ($content
+        if (
+            $content
             || $conf['table'] !== 'tt_content'
             || !isset($conf['select.']['where'])
             || empty($conf['select.']['where'])

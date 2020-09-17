@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\Tests\Unit\ViewHelpers;
 
 /*
@@ -19,7 +21,6 @@ use Nimut\TestingFramework\Rendering\RenderingContextFixture;
 use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\FrontendEditing\Tests\Unit\Fixtures\ContentEditableFixtures;
-
 use TYPO3\CMS\FrontendEditing\ViewHelpers\ContentEditableViewHelper;
 
 /**

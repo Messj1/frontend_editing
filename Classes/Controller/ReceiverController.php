@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace TYPO3\CMS\FrontendEditing\Controller;
 
@@ -74,12 +75,12 @@ class ReceiverController
                         break;
                     case 'move':
                         // Check if colPos is set
-                        $colPos = isset($request->getParsedBody()['colPos']) ?
-                            (int)$request->getParsedBody()['colPos'] : -2;
+                        $internalColumnPosition = $request->getParsedBody()['colPos'];
+                        $colPos = isset($internalColumnPosition) ? (int)$internalColumnPosition : -2;
 
                         // Check if page is set
-                        $page = isset($request->getQueryParams()['page']) ?
-                            (int)$request->getQueryParams()['page'] : 0;
+                        $internalPage = $request->getQueryParams()['page'];
+                        $page = isset($internalPage) ? (int)$internalPage : 0;
 
                         $this->moveAction(
                             $table,
@@ -157,10 +158,12 @@ class ReceiverController
             $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
             $dataHandler->start($data, []);
             $dataHandler->process_datamap();
+            // @codingStandardsIgnoreStart
         } catch (\Exception $exception) {
             // If editing a Site root the DataHandler is loading additional configuration which
             // may be faulty. So suppress the Exception and continue because the update action is valid
         }
+        // @codingStandardsIgnoreEnd
         $translateKey = sprintf(
             'notifications.update.%s.',
             $table === 'pages' ? 'pages' : 'content'
@@ -350,8 +353,8 @@ class ReceiverController
         }
 
         // Add default values to datamap array
-        $data[$table][$uid] = isset($data[$table][$uid])
-            ? array_merge($data[$table][$uid], $defaultValues) : $defaultValues;
+        $dataTableUid = $data[$table][$uid];
+        $data[$table][$uid] = isset($dataTableUid) ? array_merge($dataTableUid, $defaultValues) : $defaultValues;
 
         $dataHandler->start($data, $command);
         $dataHandler->process_cmdmap();

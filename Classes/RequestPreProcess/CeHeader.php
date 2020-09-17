@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TYPO3\CMS\FrontendEditing\RequestPreProcess;
 
 /*
@@ -40,7 +42,8 @@ class CeHeader implements RequestPreProcessInterface
         bool &$isFinished
     ): string {
         // Only allowed for field header
-        if ($table === 'tt_content' && ($fieldName === 'header' || $fieldName === 'subheader')
+        if (
+            $table === 'tt_content' && ($fieldName === 'header' || $fieldName === 'subheader')
         ) {
             // Check if we need to update header-type field
             if (strpos($content, '<h') === 0) {

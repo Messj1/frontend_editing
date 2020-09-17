@@ -143,14 +143,26 @@ class FrontendEditingModuleController
         $showButton = $buttonBar->makeLinkButton()
             ->setHref($targetUrl)
             ->setOnClick('window.open(this.href, \'newTYPO3frontendWindow\').focus();return false;')
-            ->setTitle($this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.showPage'))
-            ->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-view-page', Icon::SIZE_SMALL));
+            ->setTitle($this->getLanguageService()->sL(
+                'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.showPage'
+            ))
+            ->setIcon($this->moduleTemplate->getIconFactory()->getIcon(
+                'actions-view-page',
+                Icon::SIZE_SMALL
+            ));
         $buttonBar->addButton($showButton);
 
         $refreshButton = $buttonBar->makeLinkButton()
-            ->setHref('javascript:document.getElementById(\'tx_frontendediting_iframe\').contentWindow.location.reload(true);')
-            ->setTitle($this->getLanguageService()->sL('LLL:EXT:frontend_editing/Resources/Private/Language/locallang.xlf:refreshPage'))
-            ->setIcon($this->moduleTemplate->getIconFactory()->getIcon('actions-refresh', Icon::SIZE_SMALL));
+            ->setHref(
+                'javascript:document.getElementById(\'tx_frontendediting_iframe\').contentWindow.location.reload(true);'
+            )
+            ->setTitle($this->getLanguageService()->sL(
+                'LLL:EXT:frontend_editing/Resources/Private/Language/locallang.xlf:refreshPage'
+            ))
+            ->setIcon($this->moduleTemplate->getIconFactory()->getIcon(
+                'actions-refresh',
+                Icon::SIZE_SMALL
+            ));
         $buttonBar->addButton($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT, 1);
 
         // Shortcut
@@ -218,16 +230,26 @@ class FrontendEditingModuleController
 
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $icons = [];
-        $icons['orientation'] = $iconFactory->getIcon('actions-device-orientation-change', Icon::SIZE_SMALL)->render('inline');
+        $icons['orientation'] = $iconFactory->getIcon(
+            'actions-device-orientation-change',
+            Icon::SIZE_SMALL
+        )->render('inline');
         $icons['fullscreen'] = $iconFactory->getIcon('actions-fullscreen', Icon::SIZE_SMALL)->render('inline');
         $icons['expand'] = $iconFactory->getIcon('actions-expand', Icon::SIZE_SMALL)->render('inline');
         $icons['desktop'] = $iconFactory->getIcon('actions-device-desktop', Icon::SIZE_SMALL)->render('inline');
         $icons['tablet'] = $iconFactory->getIcon('actions-device-tablet', Icon::SIZE_SMALL)->render('inline');
         $icons['mobile'] = $iconFactory->getIcon('actions-device-mobile', Icon::SIZE_SMALL)->render('inline');
-        $icons['unidentified'] = $iconFactory->getIcon('actions-device-unidentified', Icon::SIZE_SMALL)->render('inline');
+        $icons['unidentified'] = $iconFactory->getIcon(
+            'actions-device-unidentified',
+            Icon::SIZE_SMALL
+        )->render('inline');
 
         $current = ($this->getBackendUser()->uc['moduleData']['web_view']['States']['current'] ?: []);
-        $current['label'] = ($current['label'] ?? $this->getLanguageService()->sL('LLL:EXT:viewpage/Resources/Private/Language/locallang.xlf:custom'));
+        $current['label'] = (
+            $current['label'] ?? $this->getLanguageService()->sL(
+                'LLL:EXT:viewpage/Resources/Private/Language/locallang.xlf:custom'
+            )
+        );
         $current['width'] = (isset($current['width']) && (int)$current['width'] >= 300 ? (int)$current['width'] : 320);
         $current['height'] = (isset($current['height']) && (int)$current['height'] >= 300 ? (int)$current['height'] : 480);
 
