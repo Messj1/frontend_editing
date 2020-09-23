@@ -18,9 +18,9 @@ namespace TYPO3\CMS\FrontendEditing\Tests\Unit\Service\ContentEditable;
  */
 
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\FrontendEditing\Service\ContentEditableWrapperService;
 use TYPO3\CMS\FrontendEditing\Tests\Unit\Fixtures\ContentEditableFixtures;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Test case for class TYPO3\CMS\FrontendEditing\Service\ContentEditableWrapperService.
@@ -44,7 +44,18 @@ class ContentEditableWrapperServiceTest extends UnitTestCase
      */
     protected function setUp()
     {
-        Bootstrap::getInstance()->initializeBackendRouter();
+        $languageService = $this->getAccessibleMock(
+            LanguageService::class,
+            ['sl'],
+            [],
+            '',
+            false,
+            false
+        );
+        $languageService->expects($this->any())->method('sL')->will($this->returnValue('Enter text here'));
+
+        $GLOBALS['LANG'] = $languageService;
+
         $this->subject = new ContentEditableWrapperService();
         $this->fixtures = new ContentEditableFixtures();
     }

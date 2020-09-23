@@ -35,7 +35,7 @@ class CustomDropZoneViewHelperTest extends ViewHelperBaseTestcase
      */
     public function testInitializeArgumentsRegistersExpectedArguments()
     {
-        $instance = $this->getMock(CustomDropZoneViewHelper::class, ['registerArgument']);
+        $instance = $this->getAccessibleMock(CustomDropZoneViewHelper::class, ['registerArgument']);
         $instance->expects($this->at(0))->method('registerArgument')->with(
             'tables',
             'array',
@@ -76,7 +76,7 @@ class CustomDropZoneViewHelperTest extends ViewHelperBaseTestcase
      */
     public function testRenderWithoutFrontendEditingEnabled($value, array $arguments, $expected)
     {
-        $instance = $this->getMock(CustomDropZoneViewHelper::class, ['renderChildren']);
+        $instance = $this->getAccessibleMock(CustomDropZoneViewHelper::class, ['renderChildren']);
         $instance->expects($this->once())->method('renderChildren')->willReturn($value);
         $instance->setArguments($arguments);
         $instance->setRenderingContext(new RenderingContextFixture());
@@ -93,7 +93,7 @@ class CustomDropZoneViewHelperTest extends ViewHelperBaseTestcase
     public function testRenderWithFrontendEditingEnabled($value, array $arguments, $expected)
     {
         ContentEditableFixtures::setAccessServiceEnabled(true);
-        $instance = $this->getMock(CustomDropZoneViewHelper::class, ['renderChildren']);
+        $instance = $this->getAccessibleMock(CustomDropZoneViewHelper::class, ['renderChildren']);
         $instance->expects($this->once())->method('renderChildren')->willReturn($value);
         $instance->setArguments($arguments);
         $instance->setRenderingContext(new RenderingContextFixture());

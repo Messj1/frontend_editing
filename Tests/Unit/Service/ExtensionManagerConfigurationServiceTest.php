@@ -34,7 +34,10 @@ class ExtensionManagerConfigurationServiceTest extends UnitTestCase
     {
         $this->assertSame(
             ExtensionManagerConfigurationService::getSettings(),
-            []
+            [
+                'contentEditableWrapperTagName' => 'div',
+                'enablePlaceholders' => '0'
+            ]
         );
     }
 }

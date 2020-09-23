@@ -22,6 +22,7 @@ use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\FrontendEditing\Tests\Unit\Fixtures\ContentEditableFixtures;
 use TYPO3\CMS\FrontendEditing\ViewHelpers\ContentEditableViewHelper;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Test case for TYPO3\CMS\FrontendEditing\ViewHelpers\EditableViewHelper
@@ -36,7 +37,7 @@ class ContentEditableViewHelperTest extends ViewHelperBaseTestcase
      */
     public function testInitializeArgumentsRegistersExpectedArguments()
     {
-        $instance = $this->getMock(ContentEditableViewHelper::class, ['registerArgument']);
+        $instance = $this->getAccessibleMock(ContentEditableViewHelper::class, ['registerArgument']);
         $instance->expects($this->at(0))->method('registerArgument')->with(
             'table',
             'string',
@@ -70,7 +71,7 @@ class ContentEditableViewHelperTest extends ViewHelperBaseTestcase
      */
     public function testRenderWithoutFrontendEditingEnabled($value, array $arguments, $expected)
     {
-        $instance = $this->getMock(ContentEditableViewHelper::class, ['renderChildren']);
+        $instance = $this->getAccessibleMock(ContentEditableViewHelper::class, ['renderChildren']);
         $instance->expects($this->once())->method('renderChildren')->willReturn($value);
         $instance->setArguments($arguments);
         $instance->setRenderingContext(new RenderingContextFixture());
@@ -87,8 +88,19 @@ class ContentEditableViewHelperTest extends ViewHelperBaseTestcase
      */
     public function testRenderWithFrontendEditingEnabled($value, array $arguments, $expected)
     {
+        $languageService = $this->getAccessibleMock(
+            LanguageService::class,
+            ['sl'],
+            [],
+            '',
+            false,
+            false
+        );
+        $languageService->expects($this->any())->method('sL')->will($this->returnValue('Enter text here'));
+        $GLOBALS['LANG'] = $languageService;
+
         // Simulate BackendUserAuthentication object
-        $GLOBALS['BE_USER'] = $this->getMock(
+        $GLOBALS['BE_USER'] = $this->getAccessibleMock(
             BackendUserAuthentication::class,
             [],
             [],
@@ -96,7 +108,7 @@ class ContentEditableViewHelperTest extends ViewHelperBaseTestcase
             false
         );
         ContentEditableFixtures::setAccessServiceEnabled(true);
-        $instance = $this->getMock(ContentEditableViewHelper::class, ['renderChildren']);
+        $instance = $this->getAccessibleMock(ContentEditableViewHelper::class, ['renderChildren']);
         $instance->expects($this->once())->method('renderChildren')->willReturn($value);
         $instance->setArguments($arguments);
         $instance->setRenderingContext(new RenderingContextFixture());

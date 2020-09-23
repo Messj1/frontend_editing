@@ -27,7 +27,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Tests\Unit\ContentObject\Fixtures\PageRepositoryFixture;
 use TYPO3\CMS\FrontendEditing\EditingPanel\FrontendEditingPanel;
 use TYPO3\CMS\FrontendEditing\Service\ContentEditableWrapperService;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Test case for class TYPO3\CMS\FrontendEditing\EditingPanel\FrontendEditingPanel.
@@ -80,8 +80,6 @@ class FrontendEditingPanelTest extends UnitTestCase
      */
     public function editIconsDataProvider()
     {
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-
         $router = GeneralUtility::makeInstance(Router::class);
         $router->addRoute('record_edit', new Route('record_edit', []));
 
@@ -259,8 +257,6 @@ class FrontendEditingPanelTest extends UnitTestCase
         $allowEditing
     ) {
         $GLOBALS['BE_USER'] = new FrontendBackendUserAuthentication();
-        $GLOBALS['TSFE']->config['config']['tx_frontend_editing'] = $enableEditing;
-        $GLOBALS['BE_USER']->uc['tx_frontend_editing_enable'] = $allowEditing;
         $subject = new FrontendEditingPanel();
 
         $this->assertSame(
@@ -277,5 +273,13 @@ class FrontendEditingPanelTest extends UnitTestCase
                 $fieldList
             )
         );
+    }
+
+    /**
+     * @return LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
     }
 }

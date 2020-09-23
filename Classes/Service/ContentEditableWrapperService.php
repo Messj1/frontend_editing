@@ -291,13 +291,11 @@ class ContentEditableWrapperService
         $moveIcons = ($table === 'tt_content') ? $this->renderIconWithWrap('moveUp', 'actions-move-up') .
                 $this->renderIconWithWrap('moveDown', 'actions-move-down') : '';
 
-        $inlineIcons = $this->renderIconWithWrap('edit', 'actions-open', $recordTitle) .
+        return $this->renderIconWithWrap('edit', 'actions-open', $recordTitle) .
             $visibilityIcon .
             $this->renderIconWithWrap('delete', 'actions-edit-delete') .
             $this->renderIconWithWrap('new', 'actions-document-new') .
             $moveIcons;
-
-        return $inlineIcons;
     }
 
     /**
