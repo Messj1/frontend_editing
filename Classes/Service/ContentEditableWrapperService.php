@@ -367,6 +367,7 @@ class ContentEditableWrapperService
      * @param string $table
      * @param string $uid
      * @return string
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
     public function renderEditUrl($table, $uid): string
     {

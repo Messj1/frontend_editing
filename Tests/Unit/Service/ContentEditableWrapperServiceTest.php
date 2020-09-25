@@ -70,58 +70,6 @@ class ContentEditableWrapperServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function getWrappedContent()
-    {
-        $wrappedContent = $this->subject->wrapContentToBeEditable(
-            $this->fixtures->getTable(),
-            $this->fixtures->getField(),
-            $this->fixtures->getUid(),
-            $this->fixtures->getContent()
-        );
-
-        $this->assertSame(
-            $wrappedContent,
-            $this->fixtures->getWrappedExpectedContent()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function getWrapContent()
-    {
-        $wrapContent = $this->subject->wrapContent(
-            $this->fixtures->getTable(),
-            $this->fixtures->getUid(),
-            $this->fixtures->getDataArr(),
-            $this->fixtures->getContent()
-        );
-
-        $this->assertSame(
-            $wrapContent,
-            $this->fixtures->getWrapExpectedContent()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function getWrapContentWithDropzone()
-    {
-        $wrapContent = $this->subject->wrapContentWithDropzone(
-            $this->fixtures->getTable(),
-            $this->fixtures->getUid(),
-            $this->fixtures->getContent()
-        );
-        $this->assertSame(
-            $wrapContent,
-            $this->fixtures->getWrapWithDropzoneExpectedContent()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function tryWrapContentAndExpectAnException()
     {
         try {
