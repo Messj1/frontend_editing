@@ -41,12 +41,14 @@
 		}
 	},
 	"scripts": {
+		"tests:unit": ".Build/bin/phpunit --colors  -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
+		"tests:functional": ".Build/bin/phpunit --colors  -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
 		"ci:php:lint": "find *.php Classes/ Configuration/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
 		"ci:php:sniff": "phpcs Classes Tests",
 		"cs:php:fix": "phpcbf Classes Tests",
 		"ci:ts:lint": "typoscript-lint -c Configuration/TsLint.yml --ansi -n --fail-on-warnings -vvv Configuration/TypoScript/",
-		"ci:tests:unit": ".Build/bin/phpunit --colors  -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/",
-		"ci:tests:functional": ".Build/bin/phpunit --colors  -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/",
+		"ci:tests:unit": "find 'Tests/Unit' -wholename '*Test.php' | parallel --gnu 'echo; echo \"Running unit test suite {}\"; .Build/bin/phpunit --verbose --bootstrap .Build/vendor/nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php {}'",
+		"ci:tests:functional": "find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo \"Running functional test suite {}\"; .Build/bin/phpunit --verbose --bootstrap .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php {}'",
 		"ci:tests": [
 			"@ci:tests:unit",
 			"@ci:tests:functional"
