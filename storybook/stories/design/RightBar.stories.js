@@ -1,5 +1,5 @@
 import React from 'react';
-import RightPanelWrapper from './RightPanelWrapper';
+import RightPanelWrapper from './DataBinderWrapper';
 
 import loadFragment from './loadFragments';
 
