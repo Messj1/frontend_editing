@@ -12,7 +12,17 @@ const RightPanelWrapper = ({children}) => {
 
             console.log(usedComponents);
 
-            // dataBinder.init(ToggleState)
+            import(
+                'TYPO3/CMS/FrontendEditing/Component/Presentation/ToggleState'
+                ).then(({default: ToggleState}) => {
+
+                console.log(ToggleState);
+                const rightPanel = ToggleState({name: 'rightPanel'});
+
+                dataBinder.init({
+                    'Panel:rightPanel': rightPanel
+                })
+            });
         });
     });
 

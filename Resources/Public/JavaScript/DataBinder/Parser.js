@@ -35,7 +35,7 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
 
             $itemCounter: {
                 cssClass: 'top-bar-action-buttons .items-counter',
-                state: {
+                states: {
                     editor: {
                         saveItems: {
                             text: [
@@ -93,10 +93,10 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
             },
             discardButton: {
                 cssClass: 't3-frontend-editing__discard',
-                event: {
+                events: {
                     'click': 'discardSaveItems'
                 },
-                state: {
+                states: {
                     editor: {
                         saveItems: {
                             operator: '=',
@@ -122,6 +122,25 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
                 }
             },
 
+            $rightPanelCheckbox: {
+                id: 't3-frontend-editing__right-bar--open',
+                // internal event
+                states: {
+                    // model
+                    'Panel:rightPanel': {
+                        enabled: {
+                            properties: {
+                                checked: false
+                            }
+                        },
+                        disabled: {
+                            properties: {
+                                checked: true
+                            }
+                        },
+                    },
+                },
+            },
             $rightPanel: {
                 cssClass: 't3-frontend-editing__right-bar',
                 component: {
@@ -134,6 +153,14 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
                     // bind: [
                     //     '$rightBarOpenButton'
                     // ]
+                },
+            },
+            $topRightTitle: {
+                cssClass: 'top-right-title',
+                events: {
+                    'click': {
+                        'Panel:rightPanel': 'toggle'
+                    }
                 },
             },
             $leftPanel: {
@@ -178,7 +205,6 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
             $ckeditorBarWrapper: 't3-frontend-editing__ckeditor-bar__wrapper',
 
             $tree: 't3-frontend-editing__page-tree',
-            $topRightTitle: 'top-right-title',
             $topRightBar: 't3-frontend-editing__top-bar-right',
             $topLeftTitle: 'top-left-title',
             $topLeftBar: 't3-frontend-editing__top-bar-left',
@@ -202,9 +228,18 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
                 return;
             }
 
-            definition.element = document.getElementsByClassName(definition.cssClass);
+            if(definition.id) {
+                definition.element = [];
+                var element = document.getElementById(definition.id);
 
-            if (definition.element.length === 0){
+                if (element) {
+                    definition.element.push(element);
+                }
+            } else if(definition.cssClass) {
+                definition.element = document.getElementsByClassName(definition.cssClass);
+            }
+
+            if (!definition.element || definition.element.length === 0){
                log.debug('no element found', definition.cssClass);
 
                return;

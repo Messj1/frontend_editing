@@ -37,6 +37,8 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
         var components;
         var usedComponents;
 
+        var attachedListeners;
+
         reset();
 
         return {
@@ -70,7 +72,7 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
                     return null;
                 }
                 if(config.states) {
-                    //TODO init config state
+                    processStatesComponents(attacheState);
                 }
 
                 return function unregister () {
@@ -88,7 +90,9 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
 
         function reset() {
             components = null;
-            usedComponents = null
+            usedComponents = null;
+
+            attachedListeners = {};
         }
 
         function setComponents (newComponents) {
@@ -126,7 +130,8 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
             if (config.component) {
                 log.debug('addUsedComponent', name, config.component.name);
 
-                usedComponents[config.component.type] = config.component.name;
+                const componentName = config.component.type + ':' + config.component.name;
+                usedComponents[componentName] = true;
             }
             return true;
         }
@@ -135,6 +140,25 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
             log.debug('addUsedStateComponent', name, componentKey);
 
             usedComponents[componentKey] = true;
+        }
+
+        function attacheState(componentKey, states) {
+            log.debug('attacheState', name, componentKey, states);
+
+            var component = components[componentKey];
+
+            var unregister = component.subscribe(function listenStateChange (newState){
+                var stateConfig = states[newState.value];
+                if(stateConfig) {
+                    if(stateConfig.properties) {
+                        each(stateConfig.properties, function changeProp (name, value) {
+                            config.element.forEach(function changeProp (element) {
+                                element[name] = value;
+                            })
+                        })
+                    }
+                }
+            })
         }
 
         function addUsedEventComponent(event, componentKey) {
@@ -148,15 +172,32 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
 
             log.log('addEventListener', name, event, componentKey, eventTarget);
 
-            config.element.addEventListener(event, component[eventTarget]);
+            function changeState () {
+                component.doTransition(eventTarget);
+            }
+
+            if(!attachedListeners[componentKey]) {
+                attachedListeners[componentKey] = {};
+            }
+
+            attachedListeners[componentKey][event] = changeState;
+
+            config.element.forEach(function attachListener (element) {
+                element.addEventListener(event, changeState);
+            })
+
         }
 
         function detachEvent(event, componentKey, eventTarget) {
-            var component = components[componentKey];
-
             log.log('removeEventListener', name, event, componentKey, eventTarget);
 
-            config.element.removeEventListener(event, component[eventTarget]);
+            var changeState = attachedListeners[componentKey][event];
+
+            config.element.forEach(function detachListener (element) {
+                element.removeEventListener(event, changeState);
+            });
+
+            delete attachedListeners[componentKey][event];
         }
 
         function processEventTargets (process) {
@@ -173,6 +214,16 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
             });
 
             return true;
+        }
+
+        function processStatesComponentStates (process) {
+            return processStatesComponents(function findStates (componentKey, states) {
+                each(states, function doCall (state, config) {
+                    log.debug('processStatesComponents', name, config.states);
+
+                    process(componentKey, state, config)
+                })
+            });
         }
 
         function processStatesComponents (process) {
