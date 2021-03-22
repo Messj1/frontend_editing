@@ -15,7 +15,12 @@
  * Module: TYPO3/CMS/FrontendEditing/DataBinder/Parser
  * Used to fetch data from html
  */
-define(function ParserModule () {
+define(['../Utils/Logger'], function createParserModule (Logger) {
+    'use strict';
+
+    var log = Logger('FEditing:DataBinder:Parser');
+    log.trace('--> createParserModule');
+
     var topBarHeight = 160;
     var leftBarWidth = 280;
     var rightBarWidth = 325;
@@ -186,16 +191,26 @@ define(function ParserModule () {
      */
     function parseElement (root) {
         var elements = [];
-        var elementDefinition = createElementDefinition();
+        var elementDefinitions = createElementDefinition();
 
-        Object.keys(elementDefinition).map(function (name) {
-            var definition = elementDefinition[name];
+        Object.keys(elementDefinitions).forEach(function fetchElements (name) {
+            var definition = elementDefinitions[name];
+
+            log.debug('elementDefinition', name, definition);
 
             if(typeof definition !== 'object') {
                 return;
             }
 
             definition.element = document.getElementsByClassName(definition.cssClass);
+
+            if (definition.element.length === 0){
+               log.debug('no element found', definition.cssClass);
+
+               return;
+            }
+
+            log.log('element', name, definition);
 
             elements[name] = definition;
         });
@@ -211,16 +226,21 @@ define(function ParserModule () {
         parse: function (node) {
             if (node.nodeType !== Node.ELEMENT_NODE) {
                 // Huston we got some problems
-                return;
+                log.error('node type was not element', node);
+
+                throw new TypeError('node type was not element');
             }
             if(!node instanceof HTMLElement) {
                 // Huston we got some other problems with SVG or XUL
-                return;
+                log.error('node is not a HTMLElement', node);
+
+                throw new TypeError('node is not a HTMLElement');
             }
 
             // $iframe = $iframeWrapper.find('iframe');
 
-            parseElement(node);
+            log.debug('parseElement', node);
+            return parseElement(node);
         }
     }
 });

@@ -15,8 +15,11 @@
  * Module: TYPO3/CMS/FrontendEditing/DataBinder/DataHandler
  * Used to create DataHandler
  */
-define(function DataHandlerModule () {
+define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
     'use strict';
+
+    var log = Logger('FEditing:DataBinder:DataHandler');
+    log.trace('--> createDataHandlerModule');
 
     /**
      * States:
@@ -29,6 +32,8 @@ define(function DataHandlerModule () {
      * 2|  X  |
      */
     return function createDataHandler (name, config) {
+        log.debug('createDataHandler', name, config);
+
         var components;
         var usedComponents;
 
@@ -48,23 +53,29 @@ define(function DataHandlerModule () {
 
                 addUsedComponent();
 
+                log.log('created usedComponents', usedComponents);
+
                 return usedComponents;
             },
             init: function (components) {
                 if(!setComponents(components)) {
-                    return;
+                    log.error('Shutdown: Error occured during attach event', name);
+                    return null;
                 }
 
                 if(!processEventTargets(attacheEvent)) {
+                    log.error('Shutdown: Error occured during attach event', name);
                     processEventTargets(detachEvent)();
                     reset();
-                    return;
+                    return null;
                 }
                 if(config.states) {
                     //TODO init config state
                 }
 
                 return function unregister () {
+                    log.debug('unregister', name);
+
                     processEventTargets(detachEvent);
                     if(config.states) {
                         //TODO unregister config state
@@ -84,6 +95,8 @@ define(function DataHandlerModule () {
             if (components !== null) {
                 return false;
             }
+
+            log.log('setComponents', name, newComponents);
 
             components = newComponents;
 
@@ -111,27 +124,37 @@ define(function DataHandlerModule () {
          */
         function addUsedComponent() {
             if (config.component) {
+                log.debug('addUsedComponent', name, config.component.name);
+
                 usedComponents[config.component.type] = config.component.name;
             }
             return true;
         }
 
         function addUsedStateComponent(componentKey) {
+            log.debug('addUsedStateComponent', name, componentKey);
+
             usedComponents[componentKey] = true;
         }
 
         function addUsedEventComponent(event, componentKey) {
+            log.debug('addUsedEventComponent', name, componentKey);
+
             usedComponents[componentKey] = true;
         }
 
         function attacheEvent(event, componentKey, eventTarget) {
             var component = components[componentKey];
 
+            log.log('addEventListener', name, event, componentKey, eventTarget);
+
             config.element.addEventListener(event, component[eventTarget]);
         }
 
         function detachEvent(event, componentKey, eventTarget) {
             var component = components[componentKey];
+
+            log.log('removeEventListener', name, event, componentKey, eventTarget);
 
             config.element.removeEventListener(event, component[eventTarget]);
         }
@@ -140,6 +163,8 @@ define(function DataHandlerModule () {
             if(!config.events) {
                 return true;
             }
+
+            log.debug('processEventTargets', name, config.events);
 
             each(config.events, function findComponents(event, eventTargets) {
                 each(eventTargets, function doCall (componentKey, eventTarget) {
@@ -154,6 +179,8 @@ define(function DataHandlerModule () {
             if(!config.states) {
                 return true;
             }
+
+            log.debug('processStatesComponents', name, config.states);
 
             each(config.states, process);
 

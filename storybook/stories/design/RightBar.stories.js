@@ -1,7 +1,7 @@
 import React from 'react';
-import loadFragment from './loadFragments';
+import RightPanelWrapper from './RightPanelWrapper';
 
-// import './RightBar/RightBarCheckbox.css';
+import loadFragment from './loadFragments';
 
 let fragments;
 
@@ -42,7 +42,9 @@ const Template = ({template, ...args}) => {
         });
     }
     return (
-        <div dangerouslySetInnerHTML={{__html: html}}/>
+        <RightPanelWrapper>
+            <div dangerouslySetInnerHTML={{__html: html}}/>
+        </RightPanelWrapper>
     );
 };
 

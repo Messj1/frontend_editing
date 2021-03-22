@@ -17,17 +17,22 @@
  */
 define([
     './Parser',
-    './DataHandler'
-], function DataBinderModule (
+    './DataHandler',
+    '../Utils/Logger'
+], function createDataBinderModule (
     Parser,
-    DataHandler
+    DataHandler,
+    Logger
 ) {
     'use strict';
+
+    var log = Logger('FEditing:DataBinder:DataBinder');
+    log.trace('--> createDataBinderModule');
 
     return function createDataBinder() {
         var handlers;
         var components;
-        var unregisters;
+        var unregisterListeners;
 
         reset();
 
@@ -39,12 +44,16 @@ define([
 
         function load (node) {
             if (handlers.length>0) {
+                log.warn('handlers already loaded.', handlers);
                 return null;
             }
 
+            log.debug('parse.', node);
             var parsedElements = Parser.parse(node);
+
             var neededComponents = [];
 
+            log.debug('create handlers', parsedElements);
             Object.keys(parsedElements).forEach(function createHandler(elementName) {
                 var handler = DataHandler(elementName, parsedElements[elementName]);
 
@@ -53,20 +62,27 @@ define([
                 neededComponents.push.apply(neededComponents,
                     Object.keys(handler.getUsedComponents())
                 );
+
             });
+
+            log.log('neededComponents', neededComponents);
 
             return neededComponents
         }
 
         function init (neededComponents) {
             if (handlers.length === 0) {
+                log.warn('no handlers available to init.');
                 return null;
             }
+
+            log.log('set components', neededComponents);
 
             //maybe check it
             components = neededComponents;
 
-            unregisters = handlers.map(function initHandlers (handler) {
+            log.debug('init handlers', handlers);
+            unregisterListeners = handlers.map(function initHandlers (handler) {
                 //maybe only pass used components
                 return handler.init(components);
             });
@@ -75,11 +91,13 @@ define([
         }
 
         function unregister () {
-            if (unregisters === null) {
+            if (unregisterListeners === null) {
+                log.warn('no handlers initialized.');
                 return;
             }
 
-            unregisters.forEach(function unregisterHandler (unregister) {
+            log.debug('unregister handlers', unregisterListeners);
+            unregisterListeners.forEach(function unregisterHandler (unregister) {
                 unregister();
             });
 
@@ -89,7 +107,7 @@ define([
         function reset () {
             handlers = [];
             components = null;
-            unregisters = null;
+            unregisterListeners = null;
         }
     }
 });
