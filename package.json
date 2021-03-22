@@ -6,6 +6,7 @@
     "add:resource:toastr": "NODE_ENV=production npm install && cp -a ./node_modules/toastr/toastr.js ./Resources/Public/Javascript/contrib/toastr.js",
     "add:resource:immutable": "NODE_ENV=production npm install && cp -a ./node_modules/immutable/dist/immutable.js ./Resources/Public/Javascript/Contrib/immutable.js",
     "add:resource:dexie": "NODE_ENV=production npm install && cp -a ./node_modules/dexie/dist/dexie.min.js ./node_modules/dexie/dist/dexie.min.js.map ./Resources/Public/JavaScript/Contrib/",
+    "add:resource:xstate": "NODE_ENV=production npm install && cp -a ./node_modules/@xstate/fsm/dist/xstate.fsm.js ./Resources/Public/JavaScript/Contrib/",
     "build:extension": "npm run add:resource:toastr && npm run add:resource:immutable && npm run add:resource:dexie && npm run build:resource:ulog && npm run build:css",
     "build:resource:ulog": "NODE_ENV=production npm install && webpack --config ./webpack.contrib.config.js --mode production",
     "watch:css": "node-sass -rwx Resources/Private/Sass/ -o Resources/Public/Css/",
@@ -24,6 +25,7 @@
     "browserslist": "browserslist"
   },
   "dependencies": {
+    "@xstate/fsm": "^1.6.0",
     "dexie": "^3.0.3",
     "immutable": "^3.8",
     "pino": "^6.11.1",
