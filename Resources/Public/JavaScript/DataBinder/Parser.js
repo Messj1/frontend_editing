@@ -197,6 +197,21 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
                         'Panel:rightPanel': 'toggle'
                     }
                 },
+                states: {
+                    // model
+                    'Panel:rightPanel': {
+                        'method:toggle:enabled': {
+                            properties: {
+                                disabled: false,
+                            }
+                        },
+                        'method:toggle:disabled': {
+                            properties: {
+                                disabled: true,
+                            }
+                        },
+                    },
+                },
             },
             $leftPanel: {
                 cssClass: 't3-frontend-editing__left-bar',
