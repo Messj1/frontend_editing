@@ -148,17 +148,39 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
             var component = components[componentKey];
 
             var unregister = component.subscribe(function listenStateChange (newState){
+                log.debug('state changed', name, newState);
+
                 var stateConfig = states[newState.value];
                 if(stateConfig) {
-                    if(stateConfig.properties) {
-                        each(stateConfig.properties, function changeProp (name, value) {
-                            config.element.forEach(function changeProp (element) {
-                                element[name] = value;
-                            })
-                        })
-                    }
+                    log.log('process state config', name, stateConfig);
+
+                    processStateConfig(stateConfig.properties, setProperty);
+                    processStateConfig(stateConfig.styles, setStyle);
                 }
             })
+        }
+
+        function setProperty (element, key, value) {
+            log.debug('setProperty', name, element, key, value);
+
+            element[key] = value;
+        }
+
+        function setStyle(element, key, value) {
+            log.debug('setStyle', name, element, key, value);
+
+            element.style[key] = value;
+            log.log('new style', name, key, element.style[key]);
+        }
+
+        function processStateConfig (processData, process) {
+            if (processData) {
+                each(processData, function find (name, value) {
+                    config.element.forEach(function call (element) {
+                        process(element, name, value);
+                    })
+                })
+            }
         }
 
         function addUsedEventComponent(event, componentKey) {

@@ -154,6 +154,41 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
                     //     '$rightBarOpenButton'
                     // ]
                 },
+                states: {
+                    // model
+                    'Panel:rightPanel': {
+                        enabled: {
+                            styles: {
+                                right: 0,
+                                transition: 'right 0.2s linear'
+                            }
+                        },
+                        disabled: {
+                            styles: {
+                                right: null,
+                                transition: 'right 0.2s linear'
+                            }
+                        },
+                    },
+                },
+            },
+            $rightBarOpenButton: {
+                cssClass: 'right-bar-button',
+                states: {
+                    // model
+                    'Panel:rightPanel': {
+                        enabled: {
+                            styles: {
+                                left: 0,
+                            }
+                        },
+                        disabled: {
+                            styles: {
+                                left: null,
+                            }
+                        },
+                    },
+                },
             },
             $topRightTitle: {
                 cssClass: 'top-right-title',
@@ -188,7 +223,6 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
             $fullViewButton: 't3-frontend-editing__full-view',
 
             $leftBarOpenButton: 'left-bar-button',
-            $rightBarOpenButton: 'right-bar-button',
 
             $showHiddenItemsButton: 't3-frontend-editing__show-hidden-items',
 
