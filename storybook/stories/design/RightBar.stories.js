@@ -42,7 +42,7 @@ const Template = ({template, ...args}) => {
         });
     }
     return (
-        <RightPanelWrapper>
+        <RightPanelWrapper {...args}>
             <div dangerouslySetInnerHTML={{__html: html}}/>
         </RightPanelWrapper>
     );
@@ -70,3 +70,8 @@ export default {
 };
 
 export const Default = Template.bind({});
+Default.args = {
+    localStorage: true,
+    lockState: false,
+    waitingState: false,
+};
