@@ -151,13 +151,35 @@ define(['../Utils/Logger'], function createDataHandlerModule (Logger) {
                 log.debug('state changed', name, newState);
 
                 var stateConfig = states[newState.value];
+
                 if(stateConfig) {
                     log.log('process state config', name, stateConfig);
 
                     processStateConfig(stateConfig.properties, setProperty);
                     processStateConfig(stateConfig.styles, setStyle);
                 }
-            })
+
+                log.log('handle dynamic state config', name, stateConfig);
+                each(states, function processDynamicState(dynamicState, dynamicStateConfig) {
+                    dynamicState = dynamicState.split(':');
+
+                    if (dynamicState.length < 2 || dynamicState[1] === '') {
+                        return;
+                    }
+
+                    if (dynamicState[0] === 'method') {
+                        var state = true;
+                        if (dynamicState.length > 2) {
+                            state = dynamicState[2] === 'enabled';
+                        }
+
+                        if (component.canDoTransition(dynamicState[1]) === state) {
+                            processStateConfig(dynamicStateConfig.properties, setProperty);
+                            processStateConfig(dynamicStateConfig.styles, setStyle);
+                        }
+                    }
+                });
+            });
         }
 
         function setProperty (element, key, value) {

@@ -187,6 +187,20 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
                                 left: null,
                             }
                         },
+                        'method:toggle:enabled': {
+                            styles: {
+                                cursor: null,
+                                background: null,
+                                color: null,
+                            }
+                        },
+                        'method:toggle:disabled': {
+                            styles: {
+                                cursor: 'not-allowed',
+                                background: 'gray',
+                                color: 'lightgray',
+                            }
+                        },
                     },
                 },
             },
@@ -201,13 +215,19 @@ define(['../Utils/Logger'], function createParserModule (Logger) {
                     // model
                     'Panel:rightPanel': {
                         'method:toggle:enabled': {
-                            properties: {
-                                disabled: false,
+                            styles: {
+                                // display: null,
+                                cursor: null,
+                                background: null,
+                                color: null,
                             }
                         },
                         'method:toggle:disabled': {
-                            properties: {
-                                disabled: true,
+                            styles: {
+                                // display: 'none',
+                                cursor: 'not-allowed',
+                                background: 'gray',
+                                color: 'lightgray',
                             }
                         },
                     },
