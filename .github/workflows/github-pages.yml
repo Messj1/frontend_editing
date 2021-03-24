@@ -2,7 +2,7 @@ name: Publish Storybook to Github Pages
 on:
   push:
     branches:
-      - master
+      - showcase
 
 jobs:
   build-and-deploy:
@@ -37,5 +37,5 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.0.0
         with:
-          branch: gh-pages
+          branch: static-pl-showcase
           folder: storybook-static
