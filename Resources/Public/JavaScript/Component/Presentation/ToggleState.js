@@ -81,13 +81,7 @@ define([
         });
     }
 
-    function extendDefinitionWithWaitingStates (definition) {
-        definition.states.waiting = {
-            on: {
-                enable: definition.states.enabled.on.toggle,
-                disable: definition.states.disabled.on.toggle,
-            }
-        };
+    function extendDefinitionWithLockStates (definition) {
         definition.states.locked = {
             on: {
                 unlock: [{
@@ -109,9 +103,16 @@ define([
         definition.states.disabled.exit.push(xstate.assign({
             'isLocked': true
         }));
-        definition.states.disabled.exit.push();
-        // definition.states.enabled.on.toggle = 'waiting';
         definition.states.enabled.on.lock= 'locked';
+    }
+
+    function extendDefinitionWithWaitingStates (definition) {
+        definition.states.waiting = {
+            on: {
+                enable: definition.states.enabled.on.toggle,
+                disable: definition.states.disabled.on.toggle,
+            }
+        };
         definition.states.disabled.on.toggle = 'waiting';
     }
 
@@ -153,8 +154,19 @@ define([
 
         var machineDefinition = createMachineDefinition(id);
 
-        extendDefinitionWithLocalStorageAction(machineDefinition, 'rightPanelEnabled');
-        extendDefinitionWithWaitingStates(machineDefinition);
+        console.log('pre', machineDefinition);
+
+        if(config.localStorage) {
+            extendDefinitionWithLocalStorageAction(machineDefinition, 'rightPanelEnabled');
+        }
+        if(config.lockState) {
+            extendDefinitionWithLockStates(machineDefinition);
+        }
+        if(config.waitingState) {
+            extendDefinitionWithWaitingStates(machineDefinition);
+        }
+
+        console.log('post', machineDefinition);
 
         var machine = xstate.createMachine(machineDefinition);
         var service = xstate.interpret(machine).start();
